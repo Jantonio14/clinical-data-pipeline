@@ -1,0 +1,2 @@
+psycopg2-binary==2.9.10   # Postgres driver for Python (the JDBC equivalent)
+python-dotenv==1.0.1      # Reads the .env file into environment variables

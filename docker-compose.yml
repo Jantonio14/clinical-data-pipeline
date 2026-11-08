@@ -1,0 +1,34 @@
+# docker-compose.yml
+# ------------------------------------------------------------------
+# WHY: Instead of installing Postgres on your machine, Docker runs it
+# in an isolated container. `docker compose up -d` starts it,
+# `docker compose down` stops it. Your data survives restarts because
+# of the named volume at the bottom.
+# ------------------------------------------------------------------
+services:
+  db:
+    # Pinned to 16 on purpose. Postgres 18 changed where it stores data
+    # inside the container, which breaks the volume path below.
+    # Pinning versions = reproducible builds (same habit as pinning test deps).
+    image: postgres:16
+    container_name: clinical-db
+    environment:
+      # ${VAR:-default} reads from your .env file, falling back to the default.
+      # Fine for local dev; never commit real credentials.
+      POSTGRES_USER: ${POSTGRES_USER:-clinical}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-clinical}
+      POSTGRES_DB: ${POSTGRES_DB:-clinical}
+    ports:
+      # host_port:container_port. Lets DBeaver/psql/Python on your machine
+      # reach the database at localhost:5432.
+      - "5433:5432"
+    volumes:
+      # Named volume: data lives outside the container, so
+      # `docker compose down` doesn't wipe it.
+      # (`docker compose down -v` DOES wipe it — useful for a clean reload.)
+      - pgdata:/var/lib/postgresql/data
+      # Mounts the sql/ folder so you can run scripts from inside the container.
+      - ./sql:/sql
+
+volumes:
+  pgdata:

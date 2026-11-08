@@ -1,0 +1,16 @@
+# Secrets
+.env
+
+# Synthea jar + generated data: large and fully reproducible from the seed,
+# so there's no reason to commit them. (Same logic as not committing build output.)
+synthea/*.jar
+synthea/output/
+
+# Python
+__pycache__/
+.venv/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
